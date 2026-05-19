@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="apple-touch-icon" href="images/Logo Nuevo SAVAL.png"/>
+  <title>Memoria – SAVAL</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
+    body {
+      background: url('images/Fondo.jpeg') center/cover no-repeat;
+      font-family: Arial, Helvetica, sans-serif;
+      position: relative;
+    }
+
+    .bordes {
+      position: fixed; inset: 0;
+      background: url('images/Bordes.png') center/cover no-repeat;
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ══════════ LANDSCAPE ══════════ */
+    @media screen and (orientation: landscape) {
+      .page {
+        width: 100%; height: 100vh;
+        display: flex; flex-direction: row; align-items: stretch;
+        position: relative; z-index: 10;
+        padding: 20px; gap: 18px;
+      }
+      .game-container {
+        flex: 1; border-radius: 14px;
+        background: rgba(255,255,255,0.95);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 20px; gap: 14px; min-width: 0;
+      }
+      .right-col {
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: space-between;
+        flex-shrink: 0; width: 170px; padding: 8px 0;
+      }
+      .products { display: flex; flex-direction: column; align-items: center; gap: 20px; flex: 1; justify-content: center; }
+      .products img { width: 185px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
+      .logo-saval img { width: 165px; object-fit: contain; }
+      .btn-menu {
+        display: block; margin-top: 10px; text-align: center;
+        background: rgba(26,58,110,0.85); color: #fff;
+        text-decoration: none; border-radius: 20px;
+        padding: 7px 14px; font-size: 0.82rem;
+        font-weight: bold; letter-spacing: 0.04em;
+      }
+    }
+
+    @media screen and (orientation: landscape) and (min-width: 1300px) {
+      .page { padding: 24px; gap: 22px; }
+      .right-col { width: 210px; }
+      .products img { width: 230px; }
+      .logo-saval img { width: 210px; }
+    }
+
+    /* ══════════ PORTRAIT ══════════ */
+    @media screen and (orientation: portrait) {
+      .page {
+        width: 100%; height: 100vh;
+        display: flex; flex-direction: column; align-items: stretch;
+        position: relative; z-index: 10;
+        padding: 16px; gap: 12px;
+      }
+      .game-container {
+        flex: 1; border-radius: 14px;
+        background: rgba(255,255,255,0.95);
+        box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        padding: 16px; gap: 10px; min-height: 0;
+      }
+      .right-col {
+        display: flex; flex-direction: row;
+        align-items: center; justify-content: space-between;
+        flex-shrink: 0; width: 100%; padding: 6px 8px;
+      }
+      .products { display: flex; flex-direction: row; align-items: center; gap: 16px; }
+      .products img { height: 140px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
+      .logo-saval { display: flex; justify-content: center; flex: 1; }
+      .logo-saval img { height: 70px; object-fit: contain; }
+      .btn-menu {
+        padding: 6px 14px; font-size: 0.78rem; border-radius: 16px;
+        white-space: nowrap; background: rgba(26,58,110,0.85);
+        color: #fff; text-decoration: none;
+        font-weight: bold; letter-spacing: 0.04em;
+      }
+    }
+
+    /* ══════════ JUEGO INTERIOR ══════════ */
+    .game-title {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      font-weight: bold; color: #1a3a6e;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+
+    .info-bar {
+      display: flex; gap: 24px; align-items: center;
+      font-size: clamp(0.75rem, 1.5vw, 0.95rem);
+      color: #1a3a6e; font-weight: bold;
+    }
+
+    .board-wrapper {
+      flex: 1; width: 100%;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 0;
+    }
+
+    #board {
+      display: grid;
+      gap: clamp(6px, 1.2vw, 12px);
+    }
+
+    .card {
+      background: #1a3a6e;
+      border-radius: 10px;
+      cursor: pointer;
+      position: relative;
+      aspect-ratio: 1;
+      perspective: 600px;
+      transition: transform 0.1s;
+    }
+    .card:active { transform: scale(0.96); }
+
+    .card-inner {
+      width: 100%; height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.4s ease;
+      border-radius: 10px;
+    }
+    .card.flipped .card-inner,
+    .card.matched .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute; inset: 0;
+      border-radius: 10px;
+      backface-visibility: hidden;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    /* Frente — muestra el contenido */
+    .card-front {
+      transform: rotateY(180deg);
+      background: #e8f0fc;
+      flex-direction: column;
+      gap: 4px; padding: 6px;
+      overflow: hidden;
+    }
+    .card-front img {
+      max-width: 80%; max-height: 65%;
+      object-fit: contain;
+    }
+    .card-front .card-label {
+      font-size: clamp(0.5rem, 1.2vw, 0.75rem);
+      font-weight: bold; color: #1a3a6e;
+      text-align: center; line-height: 1.1;
+    }
+
+    /* Dorso */
+    .card-back {
+      background: #1a3a6e;
+    }
+    .card-back::after {
+      content: '?';
+      font-size: clamp(1.2rem, 3vw, 2rem);
+      font-weight: bold; color: rgba(255,255,255,0.6);
+    }
+
+    .card.matched .card-front {
+      background: #d4edda;
+      border: 2px solid #28a745;
+    }
+
+    .status-msg {
+      font-size: clamp(0.75rem, 1.5vw, 1rem);
+      color: #1a3a6e; font-weight: bold;
+      text-align: center; min-height: 1.4em;
+    }
+
+    .btn-reset {
+      background: #1a3a6e; color: #fff;
+      border: none; border-radius: 24px;
+      padding: 7px 28px;
+      font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+      font-weight: bold; cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background 0.2s;
+    }
+    .btn-reset:hover { background: #2a5aaa; }
+  </style>
+</head>
+<body>
+  <div class="bordes"></div>
+  <div class="page">
+
+    <div class="game-container">
+      <div class="game-title">🧠 Juego de Memoria</div>
+
+      <div class="info-bar">
+        <span>Intentos: <span id="moves">0</span></span>
+        <span>Pares: <span id="pairs">0</span> / <span id="total">0</span></span>
+        <span>⏱ <span id="timer">0:00</span></span>
+      </div>
+
+      <div class="board-wrapper">
+        <div id="board"></div>
+      </div>
+
+      <div class="status-msg" id="statusMsg"></div>
+      <button class="btn-reset" onclick="initGame()">Nueva partida</button>
+    </div>
+
+    <div class="right-col">
+      <div class="products">
+        <img src="images/Muxelix ULTRA - Botella y caja.png" alt="Muxelix Ultra"/>
+        <img src="images/Energyval (sin fondo) (13).png"     alt="Energyval"/>
+      </div>
+      <div class="logo-saval">
+        <img src="images/Logo Nuevo SAVAL.png" alt="SAVAL"/>
+      </div>
+      <a class="btn-menu" href="index.html">&#9776; Menú</a>
+    </div>
+
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════
+       TARJETAS — edita este array cuando quieras.
+       Cada objeto necesita:
+         label : texto que aparece en la tarjeta
+         img   : ruta a la imagen (dentro de images/)
+                 Pon "" si no hay imagen para ese par.
+       El juego duplica automáticamente cada entrada.
+    ═══════════════════════════════════════════════════ */
+    const CARDS_DATA = [
+      { label: "Muxelix ULTRA",  img: "images/Muxelix ULTRA - Botella y caja.png" },
+      { label: "Energyval",      img: "images/Energyval (sin fondo) (13).png"     },
+      { label: "Vitamina C",     img: "" },
+      { label: "Hierro",         img: "" },
+      { label: "Calcio",         img: "" },
+      { label: "Zinc",           img: "" },
+      { label: "Omega 3",        img: "" },
+      { label: "Nutrición",      img: "" },
+    ];
+
+    /* ═══════════════════════════════════════════════════
+       COLUMNAS del tablero (filas se calculan solas)
+       Puedes cambiarlo a 4 para tablero más pequeño.
+    ═══════════════════════════════════════════════════ */
+    const COLS = 4;
+
+    /* — Estado — */
+    let cards = [], flipped = [], matched = 0;
+    let moves = 0, locked = false;
+    let timerInterval = null, seconds = 0;
+
+    function initGame() {
+      clearInterval(timerInterval);
+      seconds = 0; moves = 0; matched = 0; flipped = []; locked = false;
+      updateUI();
+      document.getElementById('statusMsg').textContent = '';
+
+      // Duplicar y mezclar
+      cards = [...CARDS_DATA, ...CARDS_DATA]
+        .map((c, i) => ({ ...c, id: i }))
+        .sort(() => Math.random() - 0.5);
+
+      document.getElementById('total').textContent = CARDS_DATA.length;
+      renderBoard();
+      startTimer();
+    }
+
+    function renderBoard() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+
+      const rows = Math.ceil(cards.length / COLS);
+
+      // Tamaño dinámico
+      const wrapper = document.querySelector('.board-wrapper');
+      const availW  = wrapper.clientWidth  - 16;
+      const availH  = wrapper.clientHeight - 16;
+      const gap     = Math.min(12, Math.floor(availW / COLS * 0.12));
+      const cellW   = Math.floor((availW - gap * (COLS - 1)) / COLS);
+      const cellH   = Math.floor((availH - gap * (rows - 1)) / rows);
+      const cell    = Math.min(cellW, cellH);
+
+      board.style.gridTemplateColumns = `repeat(${COLS}, ${cell}px)`;
+      board.style.gridTemplateRows    = `repeat(${rows}, ${cell}px)`;
+      board.style.gap = gap + 'px';
+
+      cards.forEach((data, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.idx = idx;
+
+        const inner = document.createElement('div');
+        inner.className = 'card-inner';
+
+        // Dorso
+        const back = document.createElement('div');
+        back.className = 'card-back';
+
+        // Frente
+        const front = document.createElement('div');
+        front.className = 'card-front';
+        if (data.img) {
+          const img = document.createElement('img');
+          img.src = data.img;
+          img.alt = data.label;
+          front.appendChild(img);
+        }
+        const lbl = document.createElement('div');
+        lbl.className = 'card-label';
+        lbl.textContent = data.label;
+        front.appendChild(lbl);
+
+        inner.appendChild(back);
+        inner.appendChild(front);
+        card.appendChild(inner);
+
+        card.addEventListener('click', () => onCardClick(idx));
+        board.appendChild(card);
+      });
+    }
+
+    function onCardClick(idx) {
+      if (locked) return;
+      const cardEl = cardEl_(idx);
+      if (!cardEl || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
+
+      cardEl.classList.add('flipped');
+      flipped.push(idx);
+
+      if (flipped.length === 2) {
+        moves++;
+        document.getElementById('moves').textContent = moves;
+        locked = true;
+
+        const [a, b] = flipped;
+        if (cards[a].label === cards[b].label) {
+          // Par encontrado
+          setTimeout(() => {
+            cardEl_(a).classList.add('matched');
+            cardEl_(b).classList.add('matched');
+            matched++;
+            document.getElementById('pairs').textContent = matched;
+            flipped = []; locked = false;
+
+            if (matched === CARDS_DATA.length) {
+              clearInterval(timerInterval);
+              document.getElementById('statusMsg').textContent =
+                `🎉 ¡Completado en ${moves} intentos y ${formatTime(seconds)}!`;
+            }
+          }, 500);
+        } else {
+          setTimeout(() => {
+            cardEl_(a).classList.remove('flipped');
+            cardEl_(b).classList.remove('flipped');
+            flipped = []; locked = false;
+          }, 900);
+        }
+      }
+    }
+
+    function cardEl_(idx) {
+      return document.querySelector(`#board .card[data-idx="${idx}"]`);
+    }
+
+    function startTimer() {
+      document.getElementById('timer').textContent = '0:00';
+      timerInterval = setInterval(() => {
+        seconds++;
+        document.getElementById('timer').textContent = formatTime(seconds);
+      }, 1000);
+    }
+
+    function formatTime(s) {
+      return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+    }
+
+    function updateUI() {
+      document.getElementById('moves').textContent = moves;
+      document.getElementById('pairs').textContent = matched;
+      document.getElementById('timer').textContent = '0:00';
+    }
+
+    window.addEventListener('load', () => {
+      initGame();
+      window.addEventListener('resize', () => renderBoard());
+    });
+  </script>
+</body>
+</html>

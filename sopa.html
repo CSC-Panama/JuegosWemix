@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="apple-touch-icon" href="images/Logo Nuevo SAVAL.png"/>
+  <title>Sopa de Letras – SAVAL</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+    body { background: url('images/Fondo.jpeg') center/cover no-repeat; font-family: Arial, Helvetica, sans-serif; position: relative; }
+    .bordes { position: fixed; inset: 0; background: url('images/Bordes.png') center/cover no-repeat; pointer-events: none; z-index: 0; }
+
+    @media screen and (orientation: landscape) {
+      .page { width:100%;height:100vh;display:flex;flex-direction:row;align-items:stretch;position:relative;z-index:10;padding:20px;gap:18px; }
+      .game-container { flex:1;border-radius:14px;background:rgba(255,255,255,0.95);box-shadow:0 4px 24px rgba(0,0,0,0.15);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px;gap:14px;min-width:0; }
+      .right-col { display:flex;flex-direction:column;align-items:center;justify-content:space-between;flex-shrink:0;width:170px;padding:8px 0; }
+      .products { display:flex;flex-direction:column;align-items:center;gap:20px;flex:1;justify-content:center; }
+      .products img { width:185px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
+      .logo-saval img { width:165px;object-fit:contain; }
+      .btn-menu { display:block;margin-top:10px;text-align:center;background:rgba(26,58,110,0.85);color:#fff;text-decoration:none;border-radius:20px;padding:7px 14px;font-size:0.82rem;font-weight:bold;letter-spacing:0.04em; }
+    }
+    @media screen and (orientation: landscape) and (min-width: 1300px) {
+      .page{padding:24px;gap:22px;} .right-col{width:210px;} .products img{width:230px;} .logo-saval img{width:210px;}
+    }
+    @media screen and (orientation: portrait) {
+      .page { width:100%;height:100vh;display:flex;flex-direction:column;align-items:stretch;position:relative;z-index:10;padding:16px;gap:12px; }
+      .game-container { flex:1;border-radius:14px;background:rgba(255,255,255,0.95);box-shadow:0 4px 24px rgba(0,0,0,0.15);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 12px;gap:10px;min-height:0; }
+      .right-col { display:flex;flex-direction:row;align-items:center;justify-content:space-between;flex-shrink:0;width:100%;padding:6px 8px; }
+      .products { display:flex;flex-direction:row;align-items:center;gap:16px; }
+      .products img { height:140px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
+      .logo-saval { display:flex;justify-content:center;flex:1; }
+      .logo-saval img { height:70px;object-fit:contain; }
+      .btn-menu { padding:6px 14px;font-size:0.78rem;border-radius:16px;white-space:nowrap;background:rgba(26,58,110,0.85);color:#fff;text-decoration:none;font-weight:bold;letter-spacing:0.04em; }
+    }
+
+    .game-title { font-size:clamp(1rem,2.5vw,1.4rem);font-weight:bold;color:#1a3a6e;letter-spacing:0.06em;text-transform:uppercase; }
+    .word-list { display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;width:100%; }
+    .word-chip { font-size:clamp(0.6rem,1.3vw,0.85rem);padding:3px 10px;border-radius:20px;background:#e8f0fc;color:#1a3a6e;font-weight:bold;letter-spacing:0.05em;transition:background 0.3s,color 0.3s;white-space:nowrap; }
+    .word-chip.found { background:#1a3a6e;color:#fff;text-decoration:line-through; }
+    .grid-wrapper { flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0; }
+    #grid { display:grid;user-select:none;touch-action:none;gap:2px; }
+    .cell { display:flex;align-items:center;justify-content:center;font-weight:bold;color:#1a3a6e;background:transparent;border-radius:4px;cursor:pointer;aspect-ratio:1;transition:background 0.1s; }
+    .cell.selected { background:rgba(26,58,110,0.25); }
+    .cell.found    { background:#1a3a6e;color:#fff; }
+    .status-msg { font-size:clamp(0.75rem,1.5vw,1rem);color:#1a3a6e;font-weight:bold;text-align:center;min-height:1.4em; }
+    .btn-reset { background:#1a3a6e;color:#fff;border:none;border-radius:24px;padding:7px 28px;font-size:clamp(0.75rem,1.4vw,0.95rem);font-weight:bold;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s; }
+    .btn-reset:hover { background:#2a5aaa; }
+  </style>
+</head>
+<body>
+  <div class="bordes"></div>
+  <div class="page">
+    <div class="game-container">
+      <div class="game-title">🔍 Sopa de Letras</div>
+      <div class="word-list" id="wordList"></div>
+      <div class="grid-wrapper"><div id="grid"></div></div>
+      <div class="status-msg" id="statusMsg"></div>
+      <button class="btn-reset" onclick="initGame()">Nueva partida</button>
+    </div>
+    <div class="right-col">
+      <div class="products">
+        <img src="images/Muxelix ULTRA - Botella y caja.png" alt="Muxelix Ultra"/>
+        <img src="images/Energyval (sin fondo) (13).png" alt="Energyval"/>
+      </div>
+      <div class="logo-saval"><img src="images/Logo Nuevo SAVAL.png" alt="SAVAL"/></div>
+      <a class="btn-menu" href="index.html">&#9776; Menú</a>
+    </div>
+  </div>
+  <script>
+    // ═══ PALABRAS — edita esta lista cuando quieras ═══
+    const PALABRAS = [
+      "MUXELIX","ENERGYVAL","SAVAL","VITAMINA",
+      "HIERRO","CALCIO","ZINC","OMEGA","SALUD","NUTRICION"
+    ];
+    const GRID_SIZE = 15;
+    let grid=[],placed=[],found=[],selecting=false,startCell=null,currentCells=[];
+
+    function initGame(){
+      grid=createEmptyGrid(GRID_SIZE);placed=[];found=[];
+      placeWords();fillRandom();renderGrid();renderWordList();
+      document.getElementById('statusMsg').textContent='';
+    }
+    function createEmptyGrid(n){return Array.from({length:n},()=>Array(n).fill(''));}
+    const DIRS=[[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+    function placeWords(){
+      [...PALABRAS].sort((a,b)=>b.length-a.length).forEach(word=>{
+        let ok=false;
+        for(let t=0;t<300&&!ok;t++){
+          const[dr,dc]=DIRS[Math.floor(Math.random()*DIRS.length)];
+          const r=Math.floor(Math.random()*GRID_SIZE),c=Math.floor(Math.random()*GRID_SIZE);
+          if(canPlace(word,r,c,dr,dc)){doPlace(word,r,c,dr,dc);ok=true;}
+        }
+      });
+    }
+    function canPlace(w,r,c,dr,dc){
+      for(let i=0;i<w.length;i++){const nr=r+dr*i,nc=c+dc*i;if(nr<0||nr>=GRID_SIZE||nc<0||nc>=GRID_SIZE)return false;if(grid[nr][nc]!==''&&grid[nr][nc]!==w[i])return false;}return true;
+    }
+    function doPlace(w,r,c,dr,dc){
+      const cells=[];for(let i=0;i<w.length;i++){const nr=r+dr*i,nc=c+dc*i;grid[nr][nc]=w[i];cells.push([nr,nc]);}placed.push({word:w,cells});
+    }
+    const LETTERS='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    function fillRandom(){for(let r=0;r<GRID_SIZE;r++)for(let c=0;c<GRID_SIZE;c++)if(grid[r][c]==='')grid[r][c]=LETTERS[Math.floor(Math.random()*LETTERS.length)];}
+    function renderGrid(){
+      const ct=document.getElementById('grid');ct.innerHTML='';
+      const w=document.querySelector('.grid-wrapper');
+      const avail=Math.min(w.clientWidth,w.clientHeight)-8;
+      const px=Math.floor(avail/GRID_SIZE);
+      ct.style.gridTemplateColumns=`repeat(${GRID_SIZE},${px}px)`;
+      ct.style.gridTemplateRows=`repeat(${GRID_SIZE},${px}px)`;
+      for(let r=0;r<GRID_SIZE;r++)for(let c=0;c<GRID_SIZE;c++){
+        const el=document.createElement('div');el.className='cell';el.textContent=grid[r][c];
+        el.style.fontSize=Math.max(10,px*0.52)+'px';el.dataset.r=r;el.dataset.c=c;
+        el.addEventListener('mousedown',onDown);el.addEventListener('mouseover',onOver);el.addEventListener('mouseup',onUp);
+        el.addEventListener('touchstart',onTS,{passive:false});el.addEventListener('touchmove',onTM,{passive:false});el.addEventListener('touchend',onTE,{passive:false});
+        ct.appendChild(el);
+      }
+      applyFound();
+    }
+    function renderWordList(){
+      const l=document.getElementById('wordList');l.innerHTML='';
+      PALABRAS.forEach(w=>{const d=document.createElement('div');d.className='word-chip'+(found.includes(w)?' found':'');d.textContent=w;d.id='chip-'+w;l.appendChild(d);});
+    }
+    function onDown(e){selecting=true;startCell=cf(e.target);currentCells=[startCell];hl();}
+    function onOver(e){if(!selecting)return;currentCells=between(startCell,cf(e.target));hl();}
+    function onUp(){if(!selecting)return;selecting=false;checkSel();clearSel();}
+    function onTS(e){e.preventDefault();selecting=true;startCell=cfp(e.touches[0]);currentCells=startCell?[startCell]:[];hl();}
+    function onTM(e){e.preventDefault();if(!selecting||!startCell)return;const end=cfp(e.touches[0]);if(end)currentCells=between(startCell,end);hl();}
+    function onTE(e){e.preventDefault();selecting=false;checkSel();clearSel();}
+    function cf(el){return{r:+el.dataset.r,c:+el.dataset.c};}
+    function cfp(t){const el=document.elementFromPoint(t.clientX,t.clientY);return el&&el.classList.contains('cell')?cf(el):null;}
+    function between(a,b){
+      if(!a||!b)return[];const dr=Math.sign(b.r-a.r),dc=Math.sign(b.c-a.c);
+      const dR=Math.abs(b.r-a.r),dC=Math.abs(b.c-a.c);
+      if(dR!==0&&dC!==0&&dR!==dC)return[a];
+      const cells=[];let r=a.r,c=a.c;
+      for(let i=0;i<=Math.max(dR,dC);i++){cells.push({r,c});r+=dr;c+=dc;}return cells;
+    }
+    function hl(){document.querySelectorAll('.cell.selected').forEach(el=>el.classList.remove('selected'));currentCells.forEach(({r,c})=>{const el=cEl(r,c);if(el)el.classList.add('selected');});}
+    function clearSel(){document.querySelectorAll('.cell.selected').forEach(el=>el.classList.remove('selected'));currentCells=[];startCell=null;}
+    function cEl(r,c){return document.querySelector(`#grid .cell[data-r="${r}"][data-c="${c}"]`);}
+    function checkSel(){
+      if(currentCells.length<2)return;
+      const w=currentCells.map(({r,c})=>grid[r][c]).join(''),wr=[...w].reverse().join('');
+      for(const p of placed){
+        if(found.includes(p.word))continue;
+        if(w===p.word||wr===p.word){
+          const sk=currentCells.map(({r,c})=>r+','+c).sort().join('|');
+          const pk=p.cells.map(([r,c])=>r+','+c).sort().join('|');
+          if(sk===pk){
+            found.push(p.word);applyFound();
+            document.getElementById('chip-'+p.word).classList.add('found');
+            const msg=document.getElementById('statusMsg');
+            if(found.length===placed.length){msg.textContent='🎉 ¡Encontraste todas las palabras!';}
+            else{msg.textContent=`✅ ¡${p.word} encontrado!`;setTimeout(()=>msg.textContent='',1500);}
+            return;
+          }
+        }
+      }
+    }
+    function applyFound(){placed.forEach(p=>{if(found.includes(p.word))p.cells.forEach(([r,c])=>{const el=cEl(r,c);if(el){el.classList.add('found');el.classList.remove('selected');}});});}
+    window.addEventListener('load',()=>{initGame();window.addEventListener('resize',()=>renderGrid());});
+    document.addEventListener('mouseup',()=>{if(selecting){selecting=false;checkSel();clearSel();}});
+  </script>
+</body>
+</html>
