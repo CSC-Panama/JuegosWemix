@@ -37,8 +37,8 @@
     }
 
     .game-title { font-size:clamp(1rem,2.5vw,1.4rem);font-weight:bold;color:#1a3a6e;letter-spacing:0.06em;text-transform:uppercase; }
-    .word-list { display:flex;flex-wrap:wrap;gap:6px 14px;justify-content:center;width:100%; }
-    .word-chip { font-size:clamp(0.78rem,1.8vw,1.05rem);padding:3px 10px;border-radius:20px;background:#e8f0fc;color:#1a3a6e;font-weight:bold;letter-spacing:0.05em;transition:background 0.3s,color 0.3s;white-space:nowrap; }
+    .word-list { display:flex;flex-wrap:wrap;gap:4px 8px;justify-content:center;width:100%;overflow:hidden; }
+    .word-chip { font-size:clamp(0.7rem,1.5vw,0.92rem);padding:2px 8px;border-radius:20px;background:#e8f0fc;color:#1a3a6e;font-weight:bold;letter-spacing:0.03em;transition:background 0.3s,color 0.3s;white-space:nowrap;max-width:100%; }
     .word-chip.found { background:#1a3a6e;color:#fff;text-decoration:line-through; }
     .grid-wrapper { flex:1;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;min-height:0; }
     #grid { display:grid;user-select:none;touch-action:none;gap:2px; }
