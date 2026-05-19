@@ -200,6 +200,11 @@
       transition: background 0.2s;
     }
     .btn-reset:hover { background: #2a5aaa; }
+
+    #timer { font-variant-numeric: tabular-nums; transition: color 0.4s; }
+    #timer.warn   { color: #e67e22; }
+    #timer.danger { color: #c0392b; animation: pulse 0.6s ease-in-out infinite alternate; }
+    @keyframes pulse { from { opacity: 1; } to { opacity: 0.45; } }
   </style>
 </head>
 <body>
@@ -264,12 +269,12 @@
 
     /* — Estado — */
     let cards = [], flipped = [], matched = 0;
-    let moves = 0, locked = false;
-    let timerInterval = null, seconds = 0;
+    let moves = 0, locked = false, gameOver = false;
+    let timerInterval = null, timeLeft = 60;
 
     function initGame() {
       clearInterval(timerInterval);
-      seconds = 0; moves = 0; matched = 0; flipped = []; locked = false;
+      timeLeft = 60; moves = 0; matched = 0; flipped = []; locked = false; gameOver = false;
       updateUI();
       document.getElementById('statusMsg').textContent = '';
 
@@ -338,7 +343,7 @@
     }
 
     function onCardClick(idx) {
-      if (locked) return;
+      if (locked || gameOver) return;
       const cardEl = cardEl_(idx);
       if (!cardEl || cardEl.classList.contains('flipped') || cardEl.classList.contains('matched')) return;
 
@@ -362,8 +367,10 @@
 
             if (matched === CARDS_DATA.length) {
               clearInterval(timerInterval);
+              gameOver = true;
+              const elapsed = formatTime(60 - timeLeft);
               document.getElementById('statusMsg').textContent =
-                `🎉 ¡Completado en ${moves} intentos y ${formatTime(seconds)}!`;
+                `🎉 ¡Completado en ${moves} intentos y ${elapsed}!`;
             }
           }, 500);
         } else {
@@ -381,11 +388,23 @@
     }
 
     function startTimer() {
-      document.getElementById('timer').textContent = '0:00';
+      updateTimerDisplay();
       timerInterval = setInterval(() => {
-        seconds++;
-        document.getElementById('timer').textContent = formatTime(seconds);
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          gameOver = true;
+          locked = true;
+          document.getElementById('statusMsg').textContent = '⏰ ¡Tiempo agotado!';
+        }
       }, 1000);
+    }
+
+    function updateTimerDisplay() {
+      const el = document.getElementById('timer');
+      el.textContent = formatTime(timeLeft);
+      el.className = timeLeft <= 10 ? 'danger' : timeLeft <= 30 ? 'warn' : '';
     }
 
     function formatTime(s) {
@@ -395,7 +414,7 @@
     function updateUI() {
       document.getElementById('moves').textContent = moves;
       document.getElementById('pairs').textContent = matched;
-      document.getElementById('timer').textContent = '0:00';
+      updateTimerDisplay();
     }
 
     window.addEventListener('load', () => {
