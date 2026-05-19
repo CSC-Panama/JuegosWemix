@@ -48,6 +48,12 @@
     .status-msg { font-size:clamp(0.75rem,1.5vw,1rem);color:#1a3a6e;font-weight:bold;text-align:center;min-height:1.4em; }
     .btn-reset { background:#1a3a6e;color:#fff;border:none;border-radius:24px;padding:7px 28px;font-size:clamp(0.75rem,1.4vw,0.95rem);font-weight:bold;cursor:pointer;letter-spacing:0.05em;transition:background 0.2s; }
     .btn-reset:hover { background:#2a5aaa; }
+    .timer-row { display:flex;align-items:center;justify-content:center;gap:10px;width:100%; }
+    .timer-label { font-size:clamp(0.65rem,1.2vw,0.85rem);font-weight:bold;color:#1a3a6e;text-transform:uppercase;letter-spacing:0.06em; }
+    .timer-display { font-size:clamp(1.3rem,3.5vw,2rem);font-weight:bold;color:#1a3a6e;letter-spacing:0.12em;font-variant-numeric:tabular-nums;min-width:3ch;text-align:center;transition:color 0.4s; }
+    .timer-display.warn { color:#e67e22; }
+    .timer-display.danger { color:#c0392b; animation:pulse 0.6s ease-in-out infinite alternate; }
+    @keyframes pulse { from{opacity:1} to{opacity:0.5} }
   </style>
 </head>
 <body>
@@ -56,6 +62,10 @@
     <div class="game-container">
       <div class="game-title">🔍 Sopa de Letras</div>
       <div class="word-list" id="wordList"></div>
+      <div class="timer-row">
+        <span class="timer-label">Tiempo:</span>
+        <span class="timer-display" id="timerDisplay">1:00</span>
+      </div>
       <div class="grid-wrapper"><div id="grid"></div></div>
       <div class="status-msg" id="statusMsg"></div>
       <button class="btn-reset" onclick="initGame()">Nueva partida</button>
@@ -80,12 +90,37 @@
     ];
     const GRID_SIZE = 15;
     let PALABRAS=[],grid=[],placed=[],found=[],selecting=false,startCell=null,currentCells=[];
+    let timerInterval=null,timeLeft=60,gameOver=false;
 
     function initGame(){
       PALABRAS=VARIANTES[Math.floor(Math.random()*VARIANTES.length)];
-      grid=createEmptyGrid(GRID_SIZE);placed=[];found=[];
+      grid=createEmptyGrid(GRID_SIZE);placed=[];found=[];gameOver=false;
       placeWords();fillRandom();renderGrid();renderWordList();
       document.getElementById('statusMsg').textContent='';
+      startTimer();
+    }
+    function startTimer(){
+      clearInterval(timerInterval);
+      timeLeft=60;
+      updateTimerDisplay();
+      timerInterval=setInterval(()=>{
+        timeLeft--;
+        updateTimerDisplay();
+        if(timeLeft<=0){
+          clearInterval(timerInterval);
+          gameOver=true;
+          clearSel();
+          const d=document.getElementById('timerDisplay');
+          d.className='timer-display danger';
+          document.getElementById('statusMsg').textContent='⏰ ¡Tiempo agotado!';
+        }
+      },1000);
+    }
+    function updateTimerDisplay(){
+      const mins=Math.floor(timeLeft/60),secs=timeLeft%60;
+      const d=document.getElementById('timerDisplay');
+      d.textContent=mins+':'+(secs<10?'0':'')+secs;
+      d.className='timer-display'+(timeLeft<=10?' danger':timeLeft<=30?' warn':'');
     }
     function createEmptyGrid(n){return Array.from({length:n},()=>Array(n).fill(''));}
     // Solo izquierda→derecha y arriba→abajo
@@ -128,11 +163,11 @@
       const l=document.getElementById('wordList');l.innerHTML='';
       PALABRAS.forEach(w=>{const d=document.createElement('div');d.className='word-chip'+(found.includes(w)?' found':'');d.textContent=w;d.id='chip-'+w;l.appendChild(d);});
     }
-    function onDown(e){selecting=true;startCell=cf(e.target);currentCells=[startCell];hl();}
-    function onOver(e){if(!selecting)return;currentCells=between(startCell,cf(e.target));hl();}
+    function onDown(e){if(gameOver)return;selecting=true;startCell=cf(e.target);currentCells=[startCell];hl();}
+    function onOver(e){if(!selecting||gameOver)return;currentCells=between(startCell,cf(e.target));hl();}
     function onUp(){if(!selecting)return;selecting=false;checkSel();clearSel();}
-    function onTS(e){e.preventDefault();selecting=true;startCell=cfp(e.touches[0]);currentCells=startCell?[startCell]:[];hl();}
-    function onTM(e){e.preventDefault();if(!selecting||!startCell)return;const end=cfp(e.touches[0]);if(end)currentCells=between(startCell,end);hl();}
+    function onTS(e){e.preventDefault();if(gameOver)return;selecting=true;startCell=cfp(e.touches[0]);currentCells=startCell?[startCell]:[];hl();}
+    function onTM(e){e.preventDefault();if(!selecting||!startCell||gameOver)return;const end=cfp(e.touches[0]);if(end)currentCells=between(startCell,end);hl();}
     function onTE(e){e.preventDefault();selecting=false;checkSel();clearSel();}
     function cf(el){return{r:+el.dataset.r,c:+el.dataset.c};}
     function cfp(t){const el=document.elementFromPoint(t.clientX,t.clientY);return el&&el.classList.contains('cell')?cf(el):null;}
@@ -158,7 +193,7 @@
             found.push(p.word);applyFound();
             document.getElementById('chip-'+p.word).classList.add('found');
             const msg=document.getElementById('statusMsg');
-            if(found.length===placed.length){msg.textContent='🎉 ¡Encontraste todas las palabras!';}
+            if(found.length===placed.length){clearInterval(timerInterval);gameOver=true;msg.textContent='🎉 ¡Encontraste todas las palabras!';}
             else{msg.textContent=`✅ ¡${p.word} encontrado!`;setTimeout(()=>msg.textContent='',1500);}
             return;
           }
