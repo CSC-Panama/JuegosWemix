@@ -146,7 +146,7 @@
     function renderGrid(){
       const ct=document.getElementById('grid');ct.innerHTML='';
       const w=document.querySelector('.grid-wrapper');
-      const avail=Math.min(w.clientWidth,w.clientHeight)-8;
+      const avail=w.clientWidth-8;
       const px=Math.floor(avail/GRID_SIZE*0.88);
       ct.style.gridTemplateColumns=`repeat(${GRID_SIZE},${px}px)`;
       ct.style.gridTemplateRows=`repeat(${GRID_SIZE},${px}px)`;
