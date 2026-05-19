@@ -70,21 +70,26 @@
     </div>
   </div>
   <script>
-    // ═══ PALABRAS — edita esta lista cuando quieras ═══
-    const PALABRAS = [
-      "MUXELIX","ENERGYVAL","SAVAL","VITAMINA",
-      "HIERRO","CALCIO","ZINC","OMEGA","SALUD","NUTRICION"
+    // ═══ VARIANTES: 3 del Set A (EXPECTORANTE) y 2 del Set B (TOS/SINERGIA) ═══
+    const VARIANTES = [
+      ["MUXELIXULTRA","ENERGYVAL","ENERGIA","EUCALIPO","EXPECTORANTE"],
+      ["MUXELIXULTRA","ENERGYVAL","ENERGIA","EUCALIPO","EXPECTORANTE"],
+      ["MUXELIXULTRA","ENERGYVAL","ENERGIA","EUCALIPO","EXPECTORANTE"],
+      ["MUXELIXULTRA","ENERGYVAL","ENERGIA","TOS","SINERGIA"],
+      ["MUXELIXULTRA","ENERGYVAL","ENERGIA","TOS","SINERGIA"],
     ];
     const GRID_SIZE = 15;
-    let grid=[],placed=[],found=[],selecting=false,startCell=null,currentCells=[];
+    let PALABRAS=[],grid=[],placed=[],found=[],selecting=false,startCell=null,currentCells=[];
 
     function initGame(){
+      PALABRAS=VARIANTES[Math.floor(Math.random()*VARIANTES.length)];
       grid=createEmptyGrid(GRID_SIZE);placed=[];found=[];
       placeWords();fillRandom();renderGrid();renderWordList();
       document.getElementById('statusMsg').textContent='';
     }
     function createEmptyGrid(n){return Array.from({length:n},()=>Array(n).fill(''));}
-    const DIRS=[[0,1],[1,0],[1,1],[-1,1],[0,-1],[-1,0],[-1,-1],[1,-1]];
+    // Solo izquierda→derecha y arriba→abajo
+    const DIRS=[[0,1],[1,0]];
     function placeWords(){
       [...PALABRAS].sort((a,b)=>b.length-a.length).forEach(word=>{
         let ok=false;
