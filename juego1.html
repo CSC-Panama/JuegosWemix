@@ -301,7 +301,7 @@
       const gap     = Math.min(12, Math.floor(availW / COLS * 0.12));
       const cellW   = Math.floor((availW - gap * (COLS - 1)) / COLS);
       const cellH   = Math.floor((availH - gap * (rows - 1)) / rows);
-      const cell    = Math.min(cellW, cellH);
+      const cell    = Math.floor(Math.min(cellW, cellH) * 0.82);
 
       board.style.gridTemplateColumns = `repeat(${COLS}, ${cell}px)`;
       board.style.gridTemplateRows    = `repeat(${rows}, ${cell}px)`;
