@@ -85,7 +85,6 @@
         align-items: center; justify-content: space-between;
         flex-shrink: 0; width: 100%; padding: 6px 8px;
       }
-      .board-wrapper { max-height: 52vh; }
       .products { display: flex; flex-direction: row; align-items: center; gap: 16px; }
       .products img { height: 140px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
       .logo-saval { display: flex; justify-content: center; flex: 1; }
@@ -302,7 +301,7 @@
       const gap     = Math.min(12, Math.floor(availW / COLS * 0.12));
       const cellW   = Math.floor((availW - gap * (COLS - 1)) / COLS);
       const cellH   = Math.floor((availH - gap * (rows - 1)) / rows);
-      const cell    = Math.floor(Math.min(cellW, cellH) * 0.82);
+      const cell    = Math.min(cellW, cellH);
 
       board.style.gridTemplateColumns = `repeat(${COLS}, ${cell}px)`;
       board.style.gridTemplateRows    = `repeat(${rows}, ${cell}px)`;

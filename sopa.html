@@ -29,7 +29,6 @@
       .page { width:100%;height:100vh;display:flex;flex-direction:column;align-items:stretch;position:relative;z-index:10;padding:16px;gap:12px; }
       .game-container { flex:1;max-height:72vh;border-radius:14px;background:rgba(255,255,255,0.95);box-shadow:0 4px 24px rgba(0,0,0,0.15);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 12px;gap:10px;min-height:0; }
       .right-col { display:flex;flex-direction:row;align-items:center;justify-content:space-between;flex-shrink:0;width:100%;padding:6px 8px; }
-      .grid-wrapper { max-height:52vh; }
       .products { display:flex;flex-direction:row;align-items:center;gap:16px; }
       .products img { height:140px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
       .logo-saval { display:flex;justify-content:center;flex:1; }
@@ -148,7 +147,7 @@
       const ct=document.getElementById('grid');ct.innerHTML='';
       const w=document.querySelector('.grid-wrapper');
       const avail=Math.min(w.clientWidth,w.clientHeight)-8;
-      const px=Math.floor(avail/GRID_SIZE*0.82);
+      const px=Math.floor(avail/GRID_SIZE);
       ct.style.gridTemplateColumns=`repeat(${GRID_SIZE},${px}px)`;
       ct.style.gridTemplateRows=`repeat(${GRID_SIZE},${px}px)`;
       for(let r=0;r<GRID_SIZE;r++)for(let c=0;c<GRID_SIZE;c++){
