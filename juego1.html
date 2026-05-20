@@ -151,32 +151,28 @@
       display: flex; align-items: center; justify-content: center;
     }
 
-    /* Frente — muestra el contenido */
+    /* Frente — muestra la ficha completa */
     .card-front {
       transform: rotateY(180deg);
       background: #e8f0fc;
-      flex-direction: column;
-      gap: 4px; padding: 6px;
+      padding: 0; gap: 0;
       overflow: hidden;
     }
     .card-front img {
-      max-width: 80%; max-height: 65%;
-      object-fit: contain;
+      width: 100%; height: 100%;
+      object-fit: cover;
     }
-    .card-front .card-label {
-      font-size: clamp(0.5rem, 1.2vw, 0.75rem);
-      font-weight: bold; color: #1a3a6e;
-      text-align: center; line-height: 1.1;
-    }
+    .card-front .card-label { display: none; }
 
-    /* Dorso */
+    /* Dorso — ficha9 */
     .card-back {
       background: #1a3a6e;
+      overflow: hidden;
     }
-    .card-back::after {
-      content: '?';
-      font-size: clamp(1.2rem, 3vw, 2rem);
-      font-weight: bold; color: rgba(255,255,255,0.6);
+    .card-back img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      border-radius: 10px;
     }
 
     .card.matched .card-front {
@@ -232,6 +228,7 @@
       <div class="products">
         <img src="images/Muxelix ULTRA - Botella y caja.png" alt="Muxelix Ultra"/>
         <img src="images/Energyval (sin fondo) (13).png"     alt="Energyval"/>
+        <img src="images/3D Flexival _A iMAGEN .png"         alt="Flexival"/>
       </div>
       <div class="logo-saval">
         <img src="images/Logo Nuevo SAVAL.png" alt="SAVAL"/>
@@ -251,14 +248,14 @@
        El juego duplica automáticamente cada entrada.
     ═══════════════════════════════════════════════════ */
     const CARDS_DATA = [
-      { label: "Muxelix ULTRA",  img: "images/Muxelix ULTRA - Botella y caja.png" },
-      { label: "Energyval",      img: "images/Energyval (sin fondo) (13).png"     },
-      { label: "Vitamina C",     img: "" },
-      { label: "Hierro",         img: "" },
-      { label: "Calcio",         img: "" },
-      { label: "Zinc",           img: "" },
-      { label: "Omega 3",        img: "" },
-      { label: "Nutrición",      img: "" },
+      { label: "f1", img: "images/fichas1.png" },
+      { label: "f2", img: "images/fichas2.png" },
+      { label: "f3", img: "images/fichas3.png" },
+      { label: "f4", img: "images/fichas4.png" },
+      { label: "f5", img: "images/fichas5.png" },
+      { label: "f6", img: "images/fichas6.png" },
+      { label: "f7", img: "images/fichas7.png" },
+      { label: "f8", img: "images/fichas8.png" },
     ];
 
     /* ═══════════════════════════════════════════════════
@@ -318,6 +315,10 @@
         // Dorso
         const back = document.createElement('div');
         back.className = 'card-back';
+        const backImg = document.createElement('img');
+        backImg.src = 'images/fichas9.png';
+        backImg.alt = '';
+        back.appendChild(backImg);
 
         // Frente
         const front = document.createElement('div');
