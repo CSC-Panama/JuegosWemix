@@ -146,8 +146,9 @@
     function renderGrid(){
       const ct=document.getElementById('grid');ct.innerHTML='';
       const w=document.querySelector('.grid-wrapper');
-      const avail=w.clientWidth-8;
-      const px=Math.floor(avail/GRID_SIZE*0.82);
+      const byW=Math.floor((w.clientWidth-8)/GRID_SIZE*0.92);
+      const byH=Math.floor((w.clientHeight-8)/GRID_SIZE);
+      const px=Math.min(byW,byH);
       ct.style.gridTemplateColumns=`repeat(${GRID_SIZE},${px}px)`;
       ct.style.gridTemplateRows=`repeat(${GRID_SIZE},${px}px)`;
       for(let r=0;r<GRID_SIZE;r++)for(let c=0;c<GRID_SIZE;c++){
