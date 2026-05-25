@@ -129,9 +129,11 @@
       updateUI();
       document.getElementById('statusMsg').textContent = '';
 
-      cards = [...CARDS_DATA, ...CARDS_DATA]
-        .map((c, i) => ({ ...c, id: i }))
-        .sort(() => Math.random() - 0.5);
+      cards = [...CARDS_DATA, ...CARDS_DATA].map((c, i) => ({ ...c, id: i }));
+      for (let i = cards.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [cards[i], cards[j]] = [cards[j], cards[i]];
+      }
 
       document.getElementById('total').textContent = CARDS_DATA.length;
       renderBoard();
