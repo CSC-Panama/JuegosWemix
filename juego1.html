@@ -1,279 +1,502 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-  <meta name="apple-mobile-web-app-capable" content="yes"/>
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-  <link rel="apple-touch-icon" href="images/Logo Nuevo SAVAL.png"/>
-  <title>Memoria – SAVAL</title>
-  <style>
-    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: url('images/Fondo.jpeg') center/cover no-repeat; font-family: Arial, Helvetica, sans-serif; }
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent" />
+    <link rel="apple-touch-icon" href="images/Logo Nuevo SAVAL.png" />
+    <title>Memoria – SAVAL</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: url('images/Fondo.jpeg') center/cover no-repeat;
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-    #app { position: fixed; width: 768px; height: 1024px; transform-origin: top left; overflow: hidden; }
-    .bordes { position: absolute; inset: 0; background: url('images/BordeMemo.png') center/cover no-repeat; pointer-events: none; z-index: 0; }
+      #app {
+        position: fixed;
+        width: 768px;
+        height: 1024px;
+        transform-origin: top left;
+        overflow: hidden;
+      }
+      .bordes {
+        position: absolute;
+        inset: 0;
+        background: url('images/BordeMemo.png') center/cover no-repeat;
+        pointer-events: none;
+        z-index: 0;
+      }
 
-    .page { width: 100%; height: 100%; display: flex; flex-direction: column; align-items: stretch; position: relative; z-index: 10; padding: 16px; gap: 12px; }
-    .game-container { flex: 1; border-radius: 14px; background: rgba(255,255,255,0.95); box-shadow: 0 4px 24px rgba(0,0,0,0.15); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px 12px; gap: 10px; min-height: 0; }
-    .right-col { display: flex; flex-direction: row; align-items: center; justify-content: flex-start; gap: 20px; flex-shrink: 0; width: 100%; padding: 6px 8px; }
-    .products { display: flex; flex-direction: row; align-items: center; gap: 16px; }
-    .products img { height: 140px; object-fit: contain; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
-    .saval-menu { display: flex; flex-direction: column; align-items: center; gap: 8px; }
-    .logo-saval img { height: 55px; object-fit: contain; }
-    .btn-menu { padding: 6px 14px; font-size: 0.78rem; border-radius: 16px; white-space: nowrap; background: rgba(26,58,110,0.85); color: #fff; text-decoration: none; font-weight: bold; letter-spacing: 0.04em; }
+      .page {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        position: relative;
+        z-index: 10;
+        padding: 16px;
+        gap: 12px;
+      }
+      .game-container {
+        flex: 1;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.95);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 16px 12px;
+        gap: 10px;
+        min-height: 0;
+      }
+      .right-col {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 20px;
+        flex-shrink: 0;
+        width: 100%;
+        padding: 6px 8px;
+      }
+      .products {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 16px;
+      }
+      .products img {
+        height: 140px;
+        object-fit: contain;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.18));
+      }
+      .saval-menu {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      .logo-saval img {
+        height: 55px;
+        object-fit: contain;
+      }
+      .btn-menu {
+        padding: 6px 14px;
+        font-size: 0.78rem;
+        border-radius: 16px;
+        white-space: nowrap;
+        background: rgba(26, 58, 110, 0.85);
+        color: #fff;
+        text-decoration: none;
+        font-weight: bold;
+        letter-spacing: 0.04em;
+      }
 
-    .game-title { font-size: 1.2rem; font-weight: bold; color: #1a3a6e; letter-spacing: 0.06em; text-transform: uppercase; }
+      .game-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #1a3a6e;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
 
-    .info-bar { display: flex; gap: 24px; align-items: center; font-size: 0.85rem; color: #1a3a6e; font-weight: bold; }
+      .info-bar {
+        display: flex;
+        gap: 24px;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #1a3a6e;
+        font-weight: bold;
+      }
 
-    .board-wrapper { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
+      .board-wrapper {
+        flex: 1;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 0;
+      }
 
-    #board { display: grid; gap: 8px; }
+      #board {
+        display: grid;
+        gap: 8px;
+      }
 
-    .card { background: #1a3a6e; border-radius: 10px; cursor: pointer; position: relative; aspect-ratio: 1; perspective: 600px; transition: transform 0.1s; }
-    .card:active { transform: scale(0.96); }
+      .card {
+        background: #1a3a6e;
+        border-radius: 10px;
+        cursor: pointer;
+        position: relative;
+        aspect-ratio: 1;
+        perspective: 600px;
+        transition: transform 0.1s;
+      }
+      .card:active {
+        transform: scale(0.96);
+      }
 
-    .card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.4s ease; border-radius: 10px; }
-    .card.flipped .card-inner, .card.matched .card-inner { transform: rotateY(180deg); }
+      .card-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.4s ease;
+        border-radius: 10px;
+      }
+      .card.flipped .card-inner,
+      .card.matched .card-inner {
+        transform: rotateY(180deg);
+      }
 
-    .card-front, .card-back { position: absolute; inset: 0; border-radius: 10px; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; }
+      .card-front,
+      .card-back {
+        position: absolute;
+        inset: 0;
+        border-radius: 10px;
+        backface-visibility: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-    .card-front { transform: rotateY(180deg); background: #e8f0fc; padding: 0; gap: 0; overflow: hidden; }
-    .card-front img { width: 100%; height: 100%; object-fit: cover; }
-    .card-front .card-label { display: none; }
+      .card-front {
+        transform: rotateY(180deg);
+        background: #e8f0fc;
+        padding: 0;
+        gap: 0;
+        overflow: hidden;
+      }
+      .card-front img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .card-front .card-label {
+        display: none;
+      }
 
-    .card-back { background: #1a3a6e; overflow: hidden; }
-    .card-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
+      .card-back {
+        background: #1a3a6e;
+        overflow: hidden;
+      }
+      .card-back img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+      }
 
-    .card.matched .card-front { background: #d4edda; border: 2px solid #28a745; }
+      .card.matched .card-front {
+        background: #d4edda;
+        border: 2px solid #28a745;
+      }
 
-    .status-msg { font-size: 0.9rem; color: #1a3a6e; font-weight: bold; text-align: center; min-height: 1.4em; }
+      .status-msg {
+        font-size: 0.9rem;
+        color: #1a3a6e;
+        font-weight: bold;
+        text-align: center;
+        min-height: 1.4em;
+      }
 
-    .btn-reset { background: #1a3a6e; color: #fff; border: none; border-radius: 24px; padding: 7px 28px; font-size: 0.88rem; font-weight: bold; cursor: pointer; letter-spacing: 0.05em; transition: background 0.2s; }
-    .btn-reset:hover { background: #2a5aaa; }
+      .btn-reset {
+        background: #1a3a6e;
+        color: #fff;
+        border: none;
+        border-radius: 24px;
+        padding: 7px 28px;
+        font-size: 0.88rem;
+        font-weight: bold;
+        cursor: pointer;
+        letter-spacing: 0.05em;
+        transition: background 0.2s;
+      }
+      .btn-reset:hover {
+        background: #2a5aaa;
+      }
 
-    #timer { font-variant-numeric: tabular-nums; transition: color 0.4s; }
-    #timer.warn   { color: #e67e22; }
-    #timer.danger { color: #c0392b; animation: pulse 0.6s ease-in-out infinite alternate; }
-    @keyframes pulse { from { opacity: 1; } to { opacity: 0.45; } }
-  </style>
-</head>
-<body>
-  <div id="app">
-    <div class="bordes"></div>
-    <div class="page">
-      <div class="game-container">
-        <div class="game-title">🧠 Juego de Memoria</div>
+      #timer {
+        font-variant-numeric: tabular-nums;
+        transition: color 0.4s;
+      }
+      #timer.warn {
+        color: #e67e22;
+      }
+      #timer.danger {
+        color: #c0392b;
+        animation: pulse 0.6s ease-in-out infinite alternate;
+      }
+      @keyframes pulse {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0.45;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="bordes"></div>
+      <div class="page">
+        <div class="game-container">
+          <div class="game-title">🧠 Juego de Memoria</div>
 
-        <div class="info-bar">
-          <span>Intentos: <span id="moves">0</span></span>
-          <span>Pares: <span id="pairs">0</span> / <span id="total">0</span></span>
-          <span>⏱ <span id="timer">1:00</span></span>
-        </div>
-
-        <div class="board-wrapper">
-          <div id="board"></div>
-        </div>
-
-        <div class="status-msg" id="statusMsg"></div>
-        <button class="btn-reset" onclick="initGame()">Nueva partida</button>
-      </div>
-
-      <div class="right-col">
-        <div class="products">
-          <img src="images/Muxelix ULTRA - Botella y caja.png" alt="Muxelix Ultra"/>
-          <img src="images/Energyval (sin fondo) (13).png"     alt="Energyval"/>
-          <img src="images/3D Flexival _A iMAGEN .png"         alt="Flexival"/>
-        </div>
-        <div class="saval-menu">
-          <div class="logo-saval">
-            <img src="images/Logo Nuevo SAVAL.png" alt="SAVAL"/>
+          <div class="info-bar">
+            <span>Intentos: <span id="moves">0</span></span>
+            <span
+              >Pares: <span id="pairs">0</span> /
+              <span id="total">0</span></span
+            >
+            <span>⏱ <span id="timer">1:20</span></span>
           </div>
-          <a class="btn-menu" href="index.html">&#9776; Menú</a>
+
+          <div class="board-wrapper">
+            <div id="board"></div>
+          </div>
+
+          <div class="status-msg" id="statusMsg"></div>
+          <button class="btn-reset" onclick="initGame()">Nueva partida</button>
+        </div>
+
+        <div class="right-col">
+          <div class="products">
+            <img
+              src="images/Muxelix ULTRA - Botella y caja.png"
+              alt="Muxelix Ultra" />
+            <img src="images/Energyval (sin fondo) (13).png" alt="Energyval" />
+            <img src="images/3D Flexival _A iMAGEN .png" alt="Flexival" />
+          </div>
+          <div class="saval-menu">
+            <div class="logo-saval">
+              <img src="images/Logo Nuevo SAVAL.png" alt="SAVAL" />
+            </div>
+            <a class="btn-menu" href="index.html">&#9776; Menú</a>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    function scaleApp() {
-      const W = 768, H = 1024;
-      const scale = Math.min(window.innerWidth / W, window.innerHeight / H);
-      const app = document.getElementById('app');
-      app.style.transform = `scale(${scale})`;
-      app.style.left = ((window.innerWidth  - W * scale) / 2) + 'px';
-      app.style.top  = ((window.innerHeight - H * scale) / 2) + 'px';
-    }
-
-    const CARDS_DATA = [
-      { label: "f1", img: "images/fichas1.png" },
-      { label: "f2", img: "images/fichas2.png" },
-      { label: "f3", img: "images/fichas3.png" },
-      { label: "f4", img: "images/fichas4.png" },
-      { label: "f5", img: "images/fichas5.png" },
-      { label: "f6", img: "images/fichas6.png" },
-      { label: "f7", img: "images/fichas7.png" },
-      { label: "f8", img: "images/fichas8.png" },
-    ];
-
-    const COLS = 4;
-
-    let cards = [], flipped = [], matched = 0;
-    let moves = 0, locked = false, gameOver = false;
-    let timerInterval = null, timeLeft = 60;
-
-    function initGame() {
-      clearInterval(timerInterval);
-      timeLeft = 60; moves = 0; matched = 0; flipped = []; locked = false; gameOver = false;
-      updateUI();
-      document.getElementById('statusMsg').textContent = '';
-
-      cards = [...CARDS_DATA, ...CARDS_DATA].map((c, i) => ({ ...c, id: i }));
-      for (let i = cards.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [cards[i], cards[j]] = [cards[j], cards[i]];
+    <script>
+      function scaleApp() {
+        const W = 768,
+          H = 1024
+        const scale = Math.min(window.innerWidth / W, window.innerHeight / H)
+        const app = document.getElementById('app')
+        app.style.transform = `scale(${scale})`
+        app.style.left = (window.innerWidth - W * scale) / 2 + 'px'
+        app.style.top = (window.innerHeight - H * scale) / 2 + 'px'
       }
 
-      document.getElementById('total').textContent = CARDS_DATA.length;
-      renderBoard();
-      startTimer();
-    }
+      const CARDS_DATA = [
+        { label: 'f1', img: 'images/fichas1.png' },
+        { label: 'f2', img: 'images/fichas2.png' },
+        { label: 'f3', img: 'images/fichas3.png' },
+        { label: 'f4', img: 'images/fichas4.png' },
+        { label: 'f5', img: 'images/fichas5.png' },
+        { label: 'f6', img: 'images/fichas6.png' },
+        { label: 'f7', img: 'images/fichas7.png' },
+        { label: 'f8', img: 'images/fichas8.png' }
+      ]
 
-    function renderBoard() {
-      const board = document.getElementById('board');
-      board.innerHTML = '';
+      const COLS = 4
 
-      const rows = Math.ceil(cards.length / COLS);
+      let cards = [],
+        flipped = [],
+        matched = 0
+      let moves = 0,
+        locked = false,
+        gameOver = false
+      let timerInterval = null,
+        timeLeft = 80
 
-      const wrapper = document.querySelector('.board-wrapper');
-      const availW  = wrapper.clientWidth  - 16;
-      const availH  = wrapper.clientHeight - 16;
-      const gap     = 8;
-      const cellW   = Math.floor((availW - gap * (COLS - 1)) / COLS);
-      const cellH   = Math.floor((availH - gap * (rows - 1)) / rows);
-      const cell    = Math.min(cellW, cellH);
+      function initGame() {
+        clearInterval(timerInterval)
+        timeLeft = 80
+        moves = 0
+        matched = 0
+        flipped = []
+        locked = false
+        gameOver = false
+        updateUI()
+        document.getElementById('statusMsg').textContent = ''
 
-      board.style.gridTemplateColumns = `repeat(${COLS}, ${cell}px)`;
-      board.style.gridTemplateRows    = `repeat(${rows}, ${cell}px)`;
-      board.style.gap = gap + 'px';
-
-      cards.forEach((data, idx) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.dataset.idx = idx;
-
-        const inner = document.createElement('div');
-        inner.className = 'card-inner';
-
-        const back = document.createElement('div');
-        back.className = 'card-back';
-        const backImg = document.createElement('img');
-        backImg.src = 'images/fichas9.png';
-        backImg.alt = '';
-        back.appendChild(backImg);
-
-        const front = document.createElement('div');
-        front.className = 'card-front';
-        if (data.img) {
-          const img = document.createElement('img');
-          img.src = data.img;
-          img.alt = data.label;
-          front.appendChild(img);
+        cards = [...CARDS_DATA, ...CARDS_DATA].map((c, i) => ({ ...c, id: i }))
+        for (let i = cards.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+          ;[cards[i], cards[j]] = [cards[j], cards[i]]
         }
-        const lbl = document.createElement('div');
-        lbl.className = 'card-label';
-        lbl.textContent = data.label;
-        front.appendChild(lbl);
 
-        inner.appendChild(back);
-        inner.appendChild(front);
-        card.appendChild(inner);
+        document.getElementById('total').textContent = CARDS_DATA.length
+        renderBoard()
+        startTimer()
+      }
 
-        card.addEventListener('click', () => onCardClick(idx));
-        board.appendChild(card);
-      });
-    }
+      function renderBoard() {
+        const board = document.getElementById('board')
+        board.innerHTML = ''
 
-    function onCardClick(idx) {
-      if (locked || gameOver) return;
-      const el = cardEl_(idx);
-      if (!el || el.classList.contains('flipped') || el.classList.contains('matched')) return;
+        const rows = Math.ceil(cards.length / COLS)
 
-      el.classList.add('flipped');
-      flipped.push(idx);
+        const wrapper = document.querySelector('.board-wrapper')
+        const availW = wrapper.clientWidth - 16
+        const availH = wrapper.clientHeight - 16
+        const gap = 8
+        const cellW = Math.floor((availW - gap * (COLS - 1)) / COLS)
+        const cellH = Math.floor((availH - gap * (rows - 1)) / rows)
+        const cell = Math.min(cellW, cellH)
 
-      if (flipped.length === 2) {
-        moves++;
-        document.getElementById('moves').textContent = moves;
-        locked = true;
+        board.style.gridTemplateColumns = `repeat(${COLS}, ${cell}px)`
+        board.style.gridTemplateRows = `repeat(${rows}, ${cell}px)`
+        board.style.gap = gap + 'px'
 
-        const [a, b] = flipped;
-        if (cards[a].label === cards[b].label) {
-          setTimeout(() => {
-            cardEl_(a).classList.add('matched');
-            cardEl_(b).classList.add('matched');
-            matched++;
-            document.getElementById('pairs').textContent = matched;
-            flipped = []; locked = false;
+        cards.forEach((data, idx) => {
+          const card = document.createElement('div')
+          card.className = 'card'
+          card.dataset.idx = idx
 
-            if (matched === CARDS_DATA.length) {
-              clearInterval(timerInterval);
-              gameOver = true;
-              const elapsed = formatTime(60 - timeLeft);
-              document.getElementById('statusMsg').textContent =
-                `🎉 ¡Completado en ${moves} intentos y ${elapsed}!`;
-            }
-          }, 500);
-        } else {
-          setTimeout(() => {
-            cardEl_(a).classList.remove('flipped');
-            cardEl_(b).classList.remove('flipped');
-            flipped = []; locked = false;
-          }, 900);
+          const inner = document.createElement('div')
+          inner.className = 'card-inner'
+
+          const back = document.createElement('div')
+          back.className = 'card-back'
+          const backImg = document.createElement('img')
+          backImg.src = 'images/fichas9.png'
+          backImg.alt = ''
+          back.appendChild(backImg)
+
+          const front = document.createElement('div')
+          front.className = 'card-front'
+          if (data.img) {
+            const img = document.createElement('img')
+            img.src = data.img
+            img.alt = data.label
+            front.appendChild(img)
+          }
+          const lbl = document.createElement('div')
+          lbl.className = 'card-label'
+          lbl.textContent = data.label
+          front.appendChild(lbl)
+
+          inner.appendChild(back)
+          inner.appendChild(front)
+          card.appendChild(inner)
+
+          card.addEventListener('click', () => onCardClick(idx))
+          board.appendChild(card)
+        })
+      }
+
+      function onCardClick(idx) {
+        if (locked || gameOver) return
+        const el = cardEl_(idx)
+        if (
+          !el ||
+          el.classList.contains('flipped') ||
+          el.classList.contains('matched')
+        )
+          return
+
+        el.classList.add('flipped')
+        flipped.push(idx)
+
+        if (flipped.length === 2) {
+          moves++
+          document.getElementById('moves').textContent = moves
+          locked = true
+
+          const [a, b] = flipped
+          if (cards[a].label === cards[b].label) {
+            setTimeout(() => {
+              cardEl_(a).classList.add('matched')
+              cardEl_(b).classList.add('matched')
+              matched++
+              document.getElementById('pairs').textContent = matched
+              flipped = []
+              locked = false
+
+              if (matched === CARDS_DATA.length) {
+                clearInterval(timerInterval)
+                gameOver = true
+                const elapsed = formatTime(80 - timeLeft)
+                document.getElementById('statusMsg').textContent =
+                  `🎉 ¡Completado en ${moves} intentos y ${elapsed}!`
+              }
+            }, 500)
+          } else {
+            setTimeout(() => {
+              cardEl_(a).classList.remove('flipped')
+              cardEl_(b).classList.remove('flipped')
+              flipped = []
+              locked = false
+            }, 900)
+          }
         }
       }
-    }
 
-    function cardEl_(idx) {
-      return document.querySelector(`#board .card[data-idx="${idx}"]`);
-    }
+      function cardEl_(idx) {
+        return document.querySelector(`#board .card[data-idx="${idx}"]`)
+      }
 
-    function startTimer() {
-      updateTimerDisplay();
-      timerInterval = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(timerInterval);
-          gameOver = true;
-          locked = true;
-          document.getElementById('statusMsg').textContent = '⏰ ¡Tiempo agotado!';
-        }
-      }, 1000);
-    }
+      function startTimer() {
+        updateTimerDisplay()
+        timerInterval = setInterval(() => {
+          timeLeft--
+          updateTimerDisplay()
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval)
+            gameOver = true
+            locked = true
+            document.getElementById('statusMsg').textContent =
+              '⏰ ¡Tiempo agotado!'
+          }
+        }, 1000)
+      }
 
-    function updateTimerDisplay() {
-      const el = document.getElementById('timer');
-      el.textContent = formatTime(timeLeft);
-      el.className = timeLeft <= 10 ? 'danger' : timeLeft <= 30 ? 'warn' : '';
-    }
+      function updateTimerDisplay() {
+        const el = document.getElementById('timer')
+        el.textContent = formatTime(timeLeft)
+        el.className = timeLeft <= 10 ? 'danger' : timeLeft <= 30 ? 'warn' : ''
+      }
 
-    function formatTime(s) {
-      return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-    }
+      function formatTime(s) {
+        return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`
+      }
 
-    function updateUI() {
-      document.getElementById('moves').textContent = moves;
-      document.getElementById('pairs').textContent = matched;
-      updateTimerDisplay();
-    }
+      function updateUI() {
+        document.getElementById('moves').textContent = moves
+        document.getElementById('pairs').textContent = matched
+        updateTimerDisplay()
+      }
 
-    window.addEventListener('load', () => {
-      scaleApp();
-      initGame();
-      window.addEventListener('resize', () => { scaleApp(); renderBoard(); });
-    });
-  </script>
-</body>
+      window.addEventListener('load', () => {
+        scaleApp()
+        initGame()
+        window.addEventListener('resize', () => {
+          scaleApp()
+          renderBoard()
+        })
+      })
+    </script>
+  </body>
 </html>
